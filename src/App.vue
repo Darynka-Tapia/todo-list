@@ -1,9 +1,7 @@
 <script setup>
+import TheLayout from '@/components/TheLayout.vue'
 </script>
 
 <template>
-  <header>ToDo list</header>
+  <TheLayout />
 </template>
-
-<style lang="scss" scoped>
-</style>

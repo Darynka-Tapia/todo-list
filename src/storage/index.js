@@ -3,15 +3,17 @@ import { createStore } from "vuex";
 const store = createStore({
   state() {
   return {
-    list: [
-      { task: 'Tarea 01', isComplete: false },
-      { task: 'Tarea 02', isComplete: true },
-    ]
+    list: []
   };
   },
   getters: {
-    getList(state) {
-      return state.list;
+    getList: (state) => (filter) => {
+      if(filter === 'all') return state.list;
+      if(filter === 'pending') return state.list.filter((task) => !task.isComplete);
+      if(filter === 'completed') return state.list.filter((task) => task.isComplete);
+    },
+    getItemsLeft(state){
+      return  state.list.reduce((acumulador, task) => (acumulador + (task.isComplete ? 0 : 1) ), 0);
     }
   },
   mutations: {
@@ -20,6 +22,14 @@ const store = createStore({
     },
     updateTaskSelected(state, value){
       state.list[value].isComplete = !state.list[value].isComplete;
+    },
+    clearComplete(state){
+      let existComplete = false;
+      do{
+        const index = state.list.findIndex((task) => task.isComplete );
+        existComplete = index > 0;
+        if(index > 0) state.list.splice(index, 1);
+      }while(existComplete)
     }
   },
   actions: {
@@ -28,6 +38,9 @@ const store = createStore({
     }, 
     updateTaskSelected({ commit }, value){
       // commit("updateTaskSelected", value);
+    },
+    clearComplete({ commit }){
+      commit("clearComplete");
     }
     
   },
